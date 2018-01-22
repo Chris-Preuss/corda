@@ -236,13 +236,21 @@ class DriverDSLImpl(
         ))
 
         config.corda.certificatesDirectory.createDirectories()
+        // Create network root truststore.
+        val rootTruststorePath = config.corda.certificatesDirectory / "network-root-truststore.jks"
+        // The network truststore will be provided by the network operator via out-of-band communication.
+        val rootTruststorePassword = "corda-root-password"
+        loadOrCreateKeyStore(rootTruststorePath, rootTruststorePassword).apply {
+            addOrReplaceCertificate(X509Utilities.CORDA_ROOT_CA, rootCert)
+            save(rootTruststorePath, rootTruststorePassword)
+
         config.corda.loadTrustStore(createNew = true).update {
             setCertificate(X509Utilities.CORDA_ROOT_CA, rootCert)
         }
 
         return if (startNodesInProcess) {
             executorService.fork {
-                NetworkRegistrationHelper(config.corda, HTTPNetworkRegistrationService(compatibilityZoneURL)).buildKeystore()
+                NetworkRegistrationHelper(config.corda, HTTPNetworkRegistrationService(compatibilityZoneURL), rootTruststorePath, config.corda.trustStorePassword).buildKeystore()
                 config
             }
         } else {
