@@ -14,6 +14,7 @@ import net.corda.core.internal.div
 import net.corda.core.internal.x500Name
 import net.corda.node.services.config.NodeConfiguration
 import net.corda.nodeapi.internal.crypto.CertificateType
+import net.corda.nodeapi.internal.crypto.X509KeyStore
 import net.corda.nodeapi.internal.crypto.X509Utilities
 import net.corda.testing.core.ALICE_NAME
 import net.corda.testing.internal.createDevIntermediateCaCertPath
@@ -164,10 +165,9 @@ class NetworkRegistrationHelperTest {
 
     private fun saveNetworkTrustStore(rootCert: X509Certificate) {
         config.certificatesDirectory.createDirectories()
-        val rootTruststore = config.certificatesDirectory / networkRootTrustStoreFileName
-        loadOrCreateKeyStore(rootTruststore, networkRootTrustStorePassword).also {
-            it.addOrReplaceCertificate(X509Utilities.CORDA_ROOT_CA, rootCert)
-            it.save(rootTruststore, networkRootTrustStorePassword)
+        val rootTruststorePath = config.certificatesDirectory / networkRootTrustStoreFileName
+        X509KeyStore.fromFile(rootTruststorePath, networkRootTrustStorePassword, createNew = true).update {
+            setCertificate(X509Utilities.CORDA_ROOT_CA, rootCert)
         }
     }
 }
