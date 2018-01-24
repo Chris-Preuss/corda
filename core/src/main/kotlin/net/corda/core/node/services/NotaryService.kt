@@ -110,7 +110,7 @@ abstract class TrustedAuthorityNotaryService : NotaryService() {
         return services.keyManagementService.sign(signableData, notaryIdentityKey)
     }
 
-    @Deprecated("This property is no longer used, will be removed in future releases") @Suppress("DEPRECATION")
+    @Deprecated("This property is no longer used") @Suppress("DEPRECATION")
     protected open val timeWindowChecker: TimeWindowChecker get() = throw UnsupportedOperationException("No default implementation, need to override")
 
     @Deprecated("No longer used, might produce an inaccurate error messages", ReplaceWith("Use NotaryService.validateTimeWindow instead")) @Suppress("DEPRECATION")

@@ -170,6 +170,11 @@ sealed class NotaryError {
     /** Occurs when time specified in the [TimeWindow] command is outside the allowed tolerance. */
     data class TimeWindowInvalid(val currentTime: Instant, val txTimeWindow: TimeWindow) : NotaryError() {
         override fun toString() = "Current time $currentTime is outside the time bounds specified by the transaction: $txTimeWindow"
+
+        companion object {
+            @JvmField @Deprecated("Here only for binary compatibility purposes, do not use.")
+            val INSTANCE = TimeWindowInvalid(Instant.EPOCH, TimeWindow.fromOnly(Instant.EPOCH))
+        }
     }
 
     data class TransactionInvalid(val cause: Throwable) : NotaryError() {
