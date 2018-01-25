@@ -122,7 +122,7 @@ class NotaryFlow {
             }
             val (id, inputs, timeWindow, notary) = receiveAndVerifyTx()
             checkNotary(notary)
-            NotaryService.validateTimeWindow(serviceHub.clock, timeWindow)
+            service.validateTimeWindow(timeWindow)
             service.commitInputStates(inputs, id, otherSideSession.counterparty)
             signAndSendResponse(id)
             return null

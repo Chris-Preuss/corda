@@ -72,6 +72,8 @@ abstract class TrustedAuthorityNotaryService : NotaryService() {
     protected open val log: Logger get() = staticLog
     protected abstract val uniquenessProvider: UniquenessProvider
 
+    fun validateTimeWindow(t: TimeWindow?) = NotaryService.validateTimeWindow(services.clock, t)
+
     /**
      * A NotaryException is thrown if any of the states have been consumed by a different transaction. Note that
      * this method does not throw an exception when input states are present multiple times within the transaction.
@@ -112,12 +114,4 @@ abstract class TrustedAuthorityNotaryService : NotaryService() {
 
     @Deprecated("This property is no longer used") @Suppress("DEPRECATION")
     protected open val timeWindowChecker: TimeWindowChecker get() = throw UnsupportedOperationException("No default implementation, need to override")
-
-    @Deprecated("No longer used, might produce an inaccurate error messages", ReplaceWith("Use NotaryService.validateTimeWindow instead")) @Suppress("DEPRECATION")
-    fun validateTimeWindow(t: TimeWindow?) {
-        if (t != null && !timeWindowChecker.isValid(t))
-            throw NotaryException(
-                    NotaryError.TimeWindowInvalid(timeWindowChecker.clock.instant(), t)
-            )
-    }
 }
