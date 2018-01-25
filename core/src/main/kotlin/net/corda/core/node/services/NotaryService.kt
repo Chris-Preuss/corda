@@ -36,6 +36,7 @@ abstract class NotaryService : SingletonSerializeAsToken() {
          *                         the [NotaryError.TimeWindowInvalid] error.
          */
         @JvmStatic
+        @Throws(NotaryException::class)
         fun validateTimeWindow(clock: Clock, timeWindow: TimeWindow?) {
             if (timeWindow == null) return
             val currentTime = clock.instant()
